@@ -97,7 +97,7 @@ class UserInput {
     }
 }
 
-public class Client_2 {
+public class Client_3 {
     public static void main(String[] args) {
         try {
             Client client = new Client();

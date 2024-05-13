@@ -8,10 +8,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client {
-    public static void main(String[] args) throws IOException { 
+    public static void main(String[] args) throws IOException {
         InetAddress addr = InetAddress.getByName("localhost"); // IP アドレスへの変換 
         System.out.println("addr = " + addr);
-        Socket socket = new Socket(addr, JabberServer.PORT); // ソケットの生成 
+        Socket socket = new Socket(addr, Server.PORT); // ソケットの生成 
         try {
             System.out.println("socket = " + socket);
             BufferedReader in =  new BufferedReader( new InputStreamReader( socket.getInputStream())); // データ受信用バッファの設定
