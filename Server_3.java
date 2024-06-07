@@ -88,7 +88,7 @@ class Server {
     }
 
     private static synchronized void registerUser(String username, String password) {
-        userAccounts[userCount] = new UserAccount(username, password, "100000");
+        userAccounts[userCount] = new UserAccount(username, password, 100000);
         userCount++;
     }
 
@@ -105,9 +105,9 @@ class Server {
 class UserAccount {
     private String username;
     private String password;
-    private String balance;
+    private int balance;
 
-    public UserAccount(String username, String password, String balance) {
+    public UserAccount(String username, String password, int balance) {
         this.username = username;
         this.password = password;
         this.balance = balance;
@@ -121,7 +121,7 @@ class UserAccount {
         return password;
     }
 
-    public String getBalance() {
+    public int getBalance() {
         return balance;
     }
 }
