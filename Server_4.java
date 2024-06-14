@@ -22,7 +22,6 @@ class Server {
                 System.out.println("New connection established: " + clientSocket);
                 clientCount ++;
                 System.out.println("Now "+clientCount+" client connected.");
-                // クライアント接続を新しいスレッドで処理
                 new ClientHandler(clientSocket).start();
             }
         } catch (IOException e) {
@@ -48,18 +47,24 @@ class Server {
                     String username = in.readLine();
                     String password = in.readLine();
                     String action = in.readLine();
-
                     System.out.println("Input userneme: " + username +
                             "\nInput password: " + password + "\naction: " + action);
                     if (action.equals("REGISTER")) {
                         registerUser(username, password);
                         out.println("Registration successful.");
+
                     } else if (action.equals("LOGIN")) {
                         if (loginUser(username, password)) {
                             out.println("LOGIN SUCCEED");
+                            String select = in.readLine();
+                            String otheruser = in.readLine();
+                            int amount = Integer.parseInt(in.readLine());
+                            String actions = in.readLine();
+                            System.out.println("Input select: " + select + "\notheruser: " + otheruser 
+                            + "\namount: " + amount + "\naction: " + actions);
+                            actionUser(select, username, otheruser, amount,out);
                         } else {
                             out.println("LOGIN FAILED");
-                            out.println("input : " + username);
                         }
                     } else if (action.equals("END")) {
                         if(clientCount == 1){
@@ -101,6 +106,61 @@ class Server {
         }
         return false;
     }
+
+    private static synchronized int showUserbalance(String user) {
+        for (int i = 0; i < userCount; i++) {
+            if (userAccounts[i].getUsername().equals(user)) {
+                return userAccounts[i].getBalance();
+            }
+        }
+        return -1; // Default value if user is not found
+    }
+
+    private static synchronized void depositUser(String user, int amount) {
+        for (int i = 0; i < userCount; i++) {
+            if (userAccounts[i].getUsername().equals(user)) {
+                userAccounts[i].depositBalance(amount);
+            }
+        }
+    }
+
+    private static synchronized void withdrawalUser(String user, int amount) {
+        for (int i = 0; i < userCount; i++) {
+            if (userAccounts[i].getUsername().equals(user)) {
+                userAccounts[i].withdrawalBalance(amount);
+            }
+        }
+    }
+
+    private static synchronized void transferUser(String me, String otheruser ,int amount) {
+        withdrawalUser(me, amount);
+        depositUser(otheruser, amount);
+    }
+
+    private static synchronized void actionUser(String select, String me, String otheruser ,int amount, PrintWriter out) {
+        if (select.equals("1")){
+            depositUser(me, amount);
+            System.out.println(showUserbalance(me));
+            out.println("deposit successful. your balance is " + showUserbalance(me));
+
+        } else if (select.equals("2")){
+            withdrawalUser(me, amount);
+            System.out.println(showUserbalance(me));
+            out.println("withdrawal successful. your balance is " + showUserbalance(me));
+
+        } else if (select.equals("3")){
+            transferUser(me, otheruser, amount);
+            System.out.println(showUserbalance(me));
+            System.out.println(showUserbalance(otheruser));
+            out.println("transfer successful. your balance is " + showUserbalance(me)+
+                                " "+otheruser+" balance is " + showUserbalance(otheruser));        
+
+        } else {
+            System.out.print("Invalid select");
+            out.println("Invalid select");
+        }
+    }
+
 }
 
 class UserAccount {
@@ -125,9 +185,17 @@ class UserAccount {
     public int getBalance() {
         return balance;
     }
+
+    public void depositBalance(int amount){
+        this.balance += amount;
+    }
+
+    public void withdrawalBalance(int amount){
+        this.balance -= amount;
+    }
 }
 
-public class Server_3 {
+public class Server_4 {
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
