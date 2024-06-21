@@ -8,7 +8,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 class Client {
-    static final int PORT = 8081;
+    static final int PORT = 8086;
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;

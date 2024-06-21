@@ -6,9 +6,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 class Server {
-    private static final int PORT = 8081;
+    private static final int PORT = 8086;
     private static ServerSocket serverSocket;
     private static int clientCount = 0;
 
@@ -60,7 +65,7 @@ class ClientHandler extends Thread {
                 String username = in.readLine();
                 String password = in.readLine();
                 String action = in.readLine();
-
+    
                 System.out.println("Input username: " + username + "\nInput password: " + password + "\naction: " + action);
                 if (action.equals("REGISTER")) {
                     UserManager.registerUser(username, password);
@@ -70,7 +75,6 @@ class ClientHandler extends Thread {
                         out.println("LOGIN SUCCEED");
                     } else {
                         out.println("LOGIN FAILED");
-                        out.println("input: " + username);
                     }
                 } else if (action.equals("END")) {
                     if (Server.getClientCount() == 1) {
@@ -99,21 +103,38 @@ class ClientHandler extends Thread {
 }
 
 class UserManager {
-    private static UserAccount[] userAccounts = new UserAccount[1000];
-    private static int userCount = 0;
+    private static final String DATABASE_NAME = "NetBanking";
+    private static final String PROPATIES = "?characterEncoding=UTF-8&serverTimezone=UTC";
+    private static final String DB_URL = "jdbc:mysql://localhost/" + DATABASE_NAME + PROPATIES;
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "2784koya";
 
-    public static synchronized void registerUser(String username, String password) {
-        userAccounts[userCount] = new UserAccount(username, password, 100000);
-        userCount++;
+    public static void registerUser(String username, String password) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "INSERT INTO users (username, password, balance) VALUES (?, ?, 100000)";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static synchronized boolean loginUser(String username, String password) {
-        for (int i = 0; i < userCount; i++) {
-            if (userAccounts[i].getUsername().equals(username) && userAccounts[i].getPassword().equals(password)) {
-                return true;
+    public static boolean loginUser(String username, String password) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                ResultSet rs = stmt.executeQuery();
+                return rs.next(); // true if user found, false otherwise
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 }
 
