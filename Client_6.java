@@ -1,3 +1,11 @@
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,15 +15,29 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+public class Client_6 {
+    public static void main(String[] args) {
+        UI frame = new UI("Net Banking");
+        frame.setVisible(true);
+    }
+}
+
 class Client {
-    static final int PORT = 8089;
+    static final int PORT = 8094;
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-    private UserInput userInput;
+    private UI ui;
 
-    public Client() {
-        userInput = new UserInput();
+    public void setUI(UI ui) {
+        this.ui = ui;
     }
 
     public void connect(String serverAddress, int serverPort) throws IOException {
@@ -33,207 +55,669 @@ class Client {
         }
     }
 
-    public void process() throws IOException {
-        while (true) {
-            System.out.println("Do you have your bank account? y/n");
-            String answer = userInput.readLine();
-
-            if (answer.equals("n")) {
-                createAccount();
-            } else if (answer.equals("y")) {
-                login();
-            } else {
-                System.out.println("Invalid input. Please enter 'y' or 'n'.");
-                out.println("Proccess");
-                out.println("Finish");
-                out.println("END");
-                break;
-            }
-
-            String response = in.readLine();
+    public void sendCredentials(String username, String password, String action) throws IOException {
+        out.println(username);
+        out.println(password);
+        out.println(action);
+        String response = in.readLine();
+        System.out.println(response);
+        
+        if (response != null) {
             System.out.println(response);
-            
-            if(response.equals("LOGIN SUCCEED")){
-                //System.out.println("check");
-                select();
-                String responses = in.readLine();
-                System.out.println(responses);
-
-
+            if (response.equals("LOGIN SUCCEED")) {
+                ui.showSelectAction();
+            }else{
+                ui.showResponse(response);
             }
-        }
-        out.println("END");
-    }
-
-    private void createAccount() throws IOException {
-        System.out.println("You can create your account.");
-        String username = userInput.readUsername();
-        String password = userInput.readPassword();
-        out.println(username);
-        out.println(password);
-        out.println("REGISTER");
-    }
-
-    private void login() throws IOException {
-        System.out.println("Input your username and password.");
-        String username = userInput.readUsername();
-        String password = userInput.readPassword();
-        out.println(username);
-        out.println(password);
-        out.println("LOGIN");
-    }
-
-    private void select() throws IOException {
-        String select;
-        String otheruser;
-        String amount;
-        System.out.println("select the operation you want to perform.");
-        System.out.println("1 : deposit");
-        System.out.println("2 : withdrawal");
-        System.out.println("3 : transfer");
-        select = userInput.readSelect();
-        if((select.equals("1")||select.equals("2")||select.equals("3"))){
-            otheruser = userInput.readotheruser(select);
-            //System.out.println("otheruser check1");
-            amount = userInput.readamount(select);
-            //System.out.println("amount check1");
-            out.println(select);
-            //System.out.println("select check");
-            out.println(otheruser);
-            //System.out.println("otheruser check");
-            out.println(amount);
-            //System.out.println("amount check");
-            out.println("SELECT");
-            System.out.println("send...");
         } else {
-            out.println("0");
-            out.println("error");
-            out.println("0");
-            out.println("SELECT");
-            System.out.println("error send...");
+            System.out.println("No response from server.");
         }
-
         
-    
-        
+    }
 
+    public void sendamountselect(String select, String otheruser, String amount, String sub) throws IOException {
+        out.println(select);
+        out.println(otheruser);
+        out.println(amount);
+        out.println(sub);
+
+        String response = in.readLine();
+        System.out.println(response);
+        ui.showResponse(response);
+    }
+
+    public void logout() throws IOException {
+        out.println("LOGOUT");
+        String response = in.readLine();
+        System.out.println(response);
+        if (response != null) {
+            ui.showResponse(response);
+        }
+        close();
     }
 }
 
-class UserInput {
-    private BufferedReader userInputReader;
+class UI extends JFrame {
+    static UI frame;
+    JButton b1, b2, b3;
+    Client client;
 
-    public UserInput() {
-        userInputReader = new BufferedReader(new InputStreamReader(System.in));
-    }
+    UI(String title) {
+        setTitle(title);
+        setBounds(100, 100, 600, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        client = new Client();
+        client.setUI(this);
 
-    public String readLine() throws IOException {
-        return userInputReader.readLine();
-    }
-
-    public String readUsername() throws IOException {
-        System.out.print("Enter username: ");
-        return readLine();
-    }
-
-    public String readPassword() throws IOException {
-        System.out.print("Enter password: ");
-        return readLine();
-    }
-
-    public String readSelect() throws IOException {
-        System.out.print("Enter select number: ");
-        return readLine();
-    }
-
-    public String readotheruser(String select) throws IOException {
-        String user;
-        if (select.equals("1")){
-            user = "user";
-        } else if (select.equals("2")){
-            user = "server";
-        } else if (select.equals("3")){
-            System.out.print("Please enter another user of your transfer: ");
-            user = readLine();
-        } else {
-            user = "invalid";
-        }
-        return user;
-    }
-
-    public String readamount(String select) throws IOException {
-        String amount;
-        String temp;
-        if (select.equals("1")){
-            while (true){
-            System.out.print("Please enter the amount of your deposit: ");
-            temp = readLine();
-            if(checkamount(temp)){
-                amount = temp;
-                break;
-            }
-            else {
-                System.out.println("invalid amount");
-                continue;
-            }
-            }
-        } else if (select.equals("2")){
-            while (true){
-            System.out.print("Please enter the amount of your withdrawal: ");
-            temp = readLine();
-            if(checkamount(temp)){
-                amount = temp;
-                break;
-            }
-            else {
-                System.out.println("invalid amount");
-                continue;
-            }
-            }
-        } else if (select.equals("3")){
-            while (true){
-            System.out.print("Please enter the amount of your transfer: ");
-            temp = readLine();
-            if(checkamount(temp)){
-                amount = temp;
-                break;
-            }
-            else {
-                System.out.println("invalid amount");
-                continue;
-            }
-            }
-        } else {
-            String i = "Invalid select";
-            System.out.println(i);
-            amount = i;
-        }
-        System.out.println("readamount check");
-        return amount;
-    }
-        
-
-    public boolean checkamount(String amount){
-        for(int i = 0; i < amount.length(); i++) {
-            if(Character.isDigit(amount.charAt(i))) {
-              continue;
-            }else {
-              return false;
-            }
-        }
-        return true;
-    }
-}
-
-public class Client_6 {
-    public static void main(String[] args) {
         try {
-            Client client = new Client();
-            client.connect("localhost", client.PORT);
-            client.process();
-            client.close();
+            client.connect("localhost", Client.PORT);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        JPanel p = new JPanel();
+        p.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JLabel l1 = new JLabel("Do you have your bank account?");
+        l1.setPreferredSize(new Dimension(200, 100));
+
+        b1 = new JButton("yes");
+        b1.setPreferredSize(new Dimension(100, 50));
+        b1.setFocusable(false);
+        b1.addActionListener(new LoginAction());
+
+        b2 = new JButton("no");
+        b2.setPreferredSize(new Dimension(100, 50));
+        b1.setFocusable(false);
+        b2.addActionListener(new CreateAccountAction());
+
+        b3 = new JButton("END");
+        b3.setPreferredSize(new Dimension(100, 50));
+        b1.setFocusable(false);
+        b3.addActionListener(new ENDAction());
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        p.add(l1, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        p.add(b1, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        p.add(b2, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        p.add(b3, gbc);
+
+        Container contentPane = getContentPane();
+        contentPane.add(p, BorderLayout.CENTER);
+
+        this.addWindowFocusListener(new java.awt.event.WindowAdapter() {
+            public void windowGainedFocus(java.awt.event.WindowEvent e) {
+                p.requestFocusInWindow();
+            }
+        });
+    }
+
+    public void showResponse(String response) {
+        JFrame frame = new JFrame("Response");
+        frame.setVisible(true);
+        frame.setBounds(100, 100, 600, 500);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    
+        JPanel p = new JPanel();
+        p.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JLabel msg = new JLabel(response);
+        msg.setPreferredSize(new Dimension(300, 50));
+    
+        JButton submitButton = new JButton("Return to Main Menu");
+        submitButton.setPreferredSize(new Dimension(250, 50));
+        submitButton.setFocusable(false);
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
+    
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        p.add(msg, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        p.add(submitButton, gbc);
+    
+        Container contentPane = frame.getContentPane();
+        contentPane.add(p, BorderLayout.CENTER);
+
+        this.addWindowFocusListener(new java.awt.event.WindowAdapter() {
+            public void windowGainedFocus(java.awt.event.WindowEvent e) {
+                p.requestFocusInWindow();
+            }
+        });
+    }
+
+    class LoginAction implements ActionListener {
+        
+        public void actionPerformed(ActionEvent e) {
+            JFrame frame = new JFrame("login");
+            frame.setVisible(true);
+            frame.setBounds(100, 100, 600, 500);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel p = new JPanel();
+            p.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
+            JLabel msg = new JLabel("login");
+            msg.setPreferredSize(new Dimension(200, 20));
+
+            JLabel l1 = new JLabel("enter your username and password.", JLabel.CENTER);
+            l1.setPreferredSize(new Dimension(250, 20));
+
+            JLabel l2 = new JLabel("your username:", JLabel.RIGHT);
+            l2.setPreferredSize(new Dimension(100, 50));
+
+            JLabel l3 = new JLabel("your password", JLabel.RIGHT);
+            l3.setPreferredSize(new Dimension(100, 50));
+
+            JTextField id = new JTextField(10);
+            id.setPreferredSize(new Dimension(200, 20));
+            JPasswordField password = new JPasswordField(10);
+            password.setPreferredSize(new Dimension(200, 20));
+
+            JButton submitButton = new JButton("Submit");
+            submitButton.setPreferredSize(new Dimension(100, 50));
+            submitButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String username = id.getText();
+                    String pwd = new String(password.getPassword());
+                    try {
+                        client.sendCredentials(username, pwd, "LOGIN");
+                        frame.dispose();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            p.add(msg);
+            
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 3;
+            gbc.insets = new Insets(10, 10, 10, 10);
+            p.add(l1, gbc);
+
+            gbc.gridwidth = 1;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            p.add(l2, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            p.add(id, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            p.add(l3, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            p.add(password, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            gbc.gridwidth = 3;
+            p.add(submitButton, gbc);
+
+            Container contentPane = frame.getContentPane();
+            contentPane.add(p, BorderLayout.CENTER);
+        }
+    }
+
+    class CreateAccountAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFrame frame = new JFrame("sign up");
+            frame.setVisible(true);
+            frame.setBounds(100, 100, 600, 500);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel p = new JPanel();
+            p.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
+            JLabel msg = new JLabel("sign up");
+            msg.setPreferredSize(new Dimension(200, 20));
+
+            JLabel l1 = new JLabel("You can create your account.", JLabel.CENTER);
+            l1.setPreferredSize(new Dimension(250, 20));
+
+            JLabel l2 = new JLabel("new username:", JLabel.RIGHT);
+            l2.setPreferredSize(new Dimension(100, 50));
+
+            JLabel l3 = new JLabel("new password", JLabel.RIGHT);
+            l3.setPreferredSize(new Dimension(100, 50));
+
+            JTextField id = new JTextField(10);
+            id.setPreferredSize(new Dimension(200, 20));
+            JPasswordField password = new JPasswordField(10);
+            password.setPreferredSize(new Dimension(200, 20));
+
+            JButton submitButton = new JButton("Submit");
+            submitButton.setPreferredSize(new Dimension(100, 50));
+            submitButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String username = id.getText();
+                    String pwd = new String(password.getPassword());
+                    try {
+                        client.sendCredentials(username, pwd, "REGISTER");
+                        frame.dispose();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            p.add(msg);
+            
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 3;
+            gbc.insets = new Insets(10, 10, 10, 10);
+            p.add(l1, gbc);
+
+            gbc.gridwidth = 1;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            p.add(l2, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            p.add(id, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            p.add(l3, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            p.add(password, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            gbc.gridwidth = 3;
+            p.add(submitButton, gbc);
+
+            Container contentPane = frame.getContentPane();
+            contentPane.add(p, BorderLayout.CENTER);
+        }
+    }
+
+    class ENDAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                client.sendCredentials("process", "Finish", "END");
+                client.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            dispose();
+            System.exit(0);
+        }
+    }
+
+    class SelectAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFrame frame = new JFrame("Select Action");
+            frame.setVisible(true);
+            frame.setBounds(100, 100, 600, 500);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel p = new JPanel();
+            p.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
+            JLabel msg = new JLabel("Select");
+            msg.setPreferredSize(new Dimension(200, 20));
+
+            JLabel l1 = new JLabel("Select the operation you want to perform.");
+            l1.setPreferredSize(new Dimension(300, 100));
+
+            JButton b1 = new JButton("1 : deposit");
+            b1.setPreferredSize(new Dimension(100, 50));
+            b1.addActionListener(new DepositAction());
+
+            JButton b2 = new JButton("2 : withdrawal");
+            b2.setPreferredSize(new Dimension(100, 50));
+            b2.addActionListener(new WithdrawalAction());
+
+            JButton b3 = new JButton("3 : transfer");
+            b3.setPreferredSize(new Dimension(100, 50));
+            b3.addActionListener(new TransferAction());
+
+            p.add(msg);
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 3;
+            gbc.insets = new Insets(10, 10, 10, 10);
+            p.add(l1, gbc);
+
+            gbc.gridwidth = 1;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            p.add(b1, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            p.add(b2, gbc);
+
+            gbc.gridx = 2;
+            gbc.gridy = 1;
+            p.add(b3, gbc);
+
+            Container contentPane = frame.getContentPane();
+            contentPane.add(p, BorderLayout.CENTER);
+        }
+    }
+
+    //public void showSelectAction() {
+    //    new SelectAction().actionPerformed(null);
+    //}
+    public void showSelectAction() {
+        JFrame frame = new JFrame("Select Action");
+        frame.setVisible(true);
+        frame.setBounds(100, 100, 600, 500);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    
+        JPanel p = new JPanel();
+        p.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+    
+        JLabel msg = new JLabel("Select");
+        msg.setPreferredSize(new Dimension(200, 20));
+    
+        JLabel l1 = new JLabel("Select the operation you want to perform.");
+        l1.setPreferredSize(new Dimension(300, 100));
+    
+        JButton b1 = new JButton("1 : deposit");
+        b1.setPreferredSize(new Dimension(100, 50));
+        b1.addActionListener(new DepositAction());
+    
+        JButton b2 = new JButton("2 : withdrawal");
+        b2.setPreferredSize(new Dimension(100, 50));
+        b2.addActionListener(new WithdrawalAction());
+    
+        JButton b3 = new JButton("3 : transfer");
+        b3.setPreferredSize(new Dimension(100, 50));
+        b3.addActionListener(new TransferAction());
+    
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.setPreferredSize(new Dimension(100, 50));
+        logoutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    try {
+                        client.sendamountselect("Logout", "", "", "SELECT");
+                        frame.dispose();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    client.logout();
+                    frame.dispose();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    
+        p.add(msg);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        p.add(l1, gbc);
+    
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        p.add(b1, gbc);
+    
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        p.add(b2, gbc);
+    
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        p.add(b3, gbc);
+    
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        p.add(logoutButton, gbc);
+    
+        Container contentPane = frame.getContentPane();
+        contentPane.add(p, BorderLayout.CENTER);
+    }
+
+    class DepositAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFrame frame = new JFrame("Deposit");
+            frame.setVisible(true);
+            frame.setBounds(100, 100,600, 500);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel p = new JPanel();
+            p.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
+            JLabel msg = new JLabel("Deposit");
+            msg.setPreferredSize(new Dimension(200, 20));
+
+            JLabel l1 = new JLabel("Enter the amount of your deposit.", JLabel.CENTER);
+            l1.setPreferredSize(new Dimension(250, 20));
+
+            JLabel l2 = new JLabel("Amount:", JLabel.RIGHT);
+            l2.setPreferredSize(new Dimension(100, 50));
+
+            JTextField amo = new JTextField(10);
+            amo.setPreferredSize(new Dimension(200, 20));
+
+            JButton submitButton = new JButton("Submit");
+            submitButton.setPreferredSize(new Dimension(100, 50));
+            submitButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String amount = amo.getText();
+                    try {
+                        client.sendamountselect("1", "user", amount, "SELECT");
+                        frame.dispose();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+
+            p.add(msg);
+            
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 3;
+            gbc.insets = new Insets(10, 10, 10, 10);
+            p.add(l1, gbc);
+
+            gbc.gridwidth = 1;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            p.add(l2, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            p.add(amo, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            gbc.gridwidth = 3;
+            p.add(submitButton, gbc);
+
+            Container contentPane = frame.getContentPane();
+            contentPane.add(p, BorderLayout.CENTER);
+        }
+    }
+
+    class WithdrawalAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFrame frame = new JFrame("Withdrawal");
+            frame.setVisible(true);
+            frame.setBounds(100, 100, 600, 500);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel p = new JPanel();
+            p.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
+            JLabel msg = new JLabel("Withdrawal");
+            msg.setPreferredSize(new Dimension(200, 20));
+
+            JLabel l1 = new JLabel("Enter the amount of your withdrawal.", JLabel.CENTER);
+            l1.setPreferredSize(new Dimension(250, 20));
+
+            JLabel l2 = new JLabel("Amount:", JLabel.RIGHT);
+            l2.setPreferredSize(new Dimension(100, 50));
+
+            JTextField amo = new JTextField(10);
+            amo.setPreferredSize(new Dimension(200, 20));
+
+            JButton submitButton = new JButton("Submit");
+            submitButton.setPreferredSize(new Dimension(100, 50));
+            submitButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String amount = amo.getText();
+                    try {
+                        client.sendamountselect("2", "server", amount, "SELECT");
+                        frame.dispose();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            p.add(msg);
+            
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 3;
+            gbc.insets = new Insets(10, 10, 10, 10);
+            p.add(l1, gbc);
+
+            gbc.gridwidth = 1;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            p.add(l2, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            p.add(amo, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            gbc.gridwidth = 3;
+            p.add(submitButton, gbc);
+
+            Container contentPane = frame.getContentPane();
+            contentPane.add(p, BorderLayout.CENTER);
+        }
+    }
+
+    class TransferAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFrame frame = new JFrame("Transfer");
+            frame.setVisible(true);
+            frame.setBounds(100, 100, 600, 500);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JPanel p = new JPanel();
+            p.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
+            JLabel msg = new JLabel("Transfer");
+            msg.setPreferredSize(new Dimension(200, 20));
+
+            JLabel l1 = new JLabel("Enter the destination and amount.", JLabel.CENTER);
+            l1.setPreferredSize(new Dimension(250, 20));
+
+            JLabel l2 = new JLabel("Destination user:", JLabel.CENTER);
+            l2.setPreferredSize(new Dimension(250, 20));
+
+            JLabel l3 = new JLabel("Amount:", JLabel.RIGHT);
+            l3.setPreferredSize(new Dimension(100, 50));
+
+            JTextField another = new JTextField(10);
+            another.setPreferredSize(new Dimension(200, 20));
+
+            JTextField amo = new JTextField(10);
+            amo.setPreferredSize(new Dimension(200, 20));
+
+            JButton submitButton = new JButton("Submit");
+            submitButton.setPreferredSize(new Dimension(100, 50));
+            submitButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String amount = amo.getText();
+                    String otheruser = another.getText();
+                    try {
+                        client.sendamountselect("3", otheruser, amount, "SELECT");
+                        frame.dispose();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            
+
+            p.add(msg);
+            
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 3;
+            gbc.insets = new Insets(10, 10, 10, 10);
+            p.add(l1, gbc);
+
+            gbc.gridwidth = 1;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            p.add(l2, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            p.add(another, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            p.add(l3, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            p.add(amo, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            gbc.gridwidth = 3;
+            p.add(submitButton, gbc);
+
+            Container contentPane = frame.getContentPane();
+            contentPane.add(p, BorderLayout.CENTER);
         }
     }
 }

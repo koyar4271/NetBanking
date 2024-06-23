@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 class Server {
-    private static final int PORT = 8094;
+    private static final int PORT = 8098;
     private static ServerSocket serverSocket;
     private static int clientCount = 0;
 
@@ -80,7 +80,6 @@ class ClientHandler extends Thread {
                     if (UserManager.loginUser(username, password)) {
                         System.out.println("LOGIN SUCCEED");
                         out.println("LOGIN SUCCEED");
-
                         String select = in.readLine();
                         String otheruser = in.readLine();
                         String amount = in.readLine();
@@ -93,10 +92,6 @@ class ClientHandler extends Thread {
                         out.println("LOGIN FAILED");
                         System.out.println("send loginfailed");
                     }
-                } else if (action.equals("LOGOUT")) {
-                    System.out.println(username + " logged out.");
-                    out.println("You have been logged out.");
-                    break;
                 } else if (action.equals("END")) {
                     if (Server.getClientCount() == 1) {
                         System.out.println("All clients exited\nDo you want to continue? y/n");
@@ -237,13 +232,13 @@ class UserManager {
             amount = Integer.parseInt(amountStr);
             if ("0".equals(select)) {
                 out.println("invalid select.");
-            } else if ("1".equals(select)) {
+            } else if ("DEPOSIT".equals(select)) {
                 depositUser(me, amount);
                 out.println("deposit successful. your balance is " + showUserbalance(me));
-            } else if ("2".equals(select)) {
+            } else if ("WITHDRAEAL".equals(select)) {
                 withdrawalUser(me, amount);
                 out.println("withdrawal successful. your balance is " + showUserbalance(me));
-            } else if ("3".equals(select)) {
+            } else if ("TRANSFER".equals(select)) {
                 if (usedUser(otheruser)) {
                     transferUser(me, otheruser, amount);
                     out.println("transfer successful. your balance is " + showUserbalance(me) +
@@ -254,7 +249,7 @@ class UserManager {
             } else if ("Logout".equals(select)) {
                 out.println("Logout, your balance is " + showUserbalance(me));
                 Server.decrementClientCount();
-
+                
             } else {
                 out.println("Invalid select");
             }
@@ -306,7 +301,7 @@ class UserAccount {
     }
 }
 
-public class Server_6 {
+public class Server_7 {
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
