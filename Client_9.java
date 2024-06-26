@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -17,10 +18,12 @@ import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 
 public class Client_9 {
     public static void main(String[] args) {
@@ -107,56 +110,65 @@ class UI extends JFrame {
 
         initMainPanel();
     }
+    
 
     public void initMainPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("background_image.png"); // 画像のパスを指定する
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
+    
+        // フォントを設定
+        Font labelFont = new Font("Arial", Font.PLAIN, 25);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 30);
+    
         JLabel label = new JLabel("Do you have your bank account?");
         label.setPreferredSize(new Dimension(200, 100));
-        label.setHorizontalAlignment(SwingConstants.CENTER);    //add
-        label.setVerticalAlignment(SwingConstants.CENTER);  //add
-
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        label.setFont(labelFont); // フォントを設定
+    
         JButton yesButton = new JButton("Yes");
         yesButton.setPreferredSize(new Dimension(200, 100));
         yesButton.setFocusable(false);
+        yesButton.setFont(buttonFont); // フォントを設定
         yesButton.addActionListener(new LoginAction(client));
-
+    
         JButton noButton = new JButton("No");
-        noButton.setPreferredSize(new Dimension(100, 50));
+        noButton.setPreferredSize(new Dimension(200, 100));
         noButton.setFocusable(false);
+        noButton.setFont(buttonFont); // フォントを設定
         noButton.addActionListener(new CreateAccountAction(client));
-
+    
         JButton endButton = new JButton("END");
-        endButton.setPreferredSize(new Dimension(100, 50));
+        endButton.setPreferredSize(new Dimension(200, 100));
         endButton.setFocusable(false);
+        endButton.setFont(buttonFont); // フォントを設定
         endButton.addActionListener(new ENDAction(client, this));
-
+    
         gbc.insets = new Insets(10, 10, 10, 10);
-
+    
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
-        //gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.CENTER; //add
-        gbc.fill = GridBagConstraints.HORIZONTAL; //add
-
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+    
         panel.add(label, gbc);
-
+    
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.CENTER; //add
+        gbc.anchor = GridBagConstraints.CENTER;
         panel.add(yesButton, gbc);
-
+    
         gbc.gridx = 1;
         gbc.gridy = 1;
         panel.add(noButton, gbc);
-
+    
         gbc.gridx = 2;
         gbc.gridy = 1;
         panel.add(endButton, gbc);
-
+    
         getContentPane().add(panel, BorderLayout.CENTER);
     }
 
@@ -177,17 +189,22 @@ class ResponseFrame extends JFrame {
     public ResponseFrame(String response) {
         setTitle("Response");
         setVisible(true);
-        setBounds(100, 100, 600, 500);
+        setBounds(100, 100, 800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 25);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 30);
+
         JLabel msg = new JLabel(response);
-        msg.setPreferredSize(new Dimension(300, 50));
+        msg.setPreferredSize(new Dimension(300, 100));
+        msg.setFont(labelFont);  // Set font size for label
 
         JButton submitButton = new JButton("Return to Main Menu");
-        submitButton.setPreferredSize(new Dimension(250, 50));
+        submitButton.setPreferredSize(new Dimension(400, 100));
+        submitButton.setFont(buttonFont);  // Set font size for button
         submitButton.setFocusable(false);
         submitButton.addActionListener(e -> dispose());
 
@@ -195,11 +212,13 @@ class ResponseFrame extends JFrame {
         gbc.gridy = 0;
         gbc.gridwidth = 3;
         gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;  // Center the label
         panel.add(msg, gbc);
 
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 3;
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;  // Center the button
         panel.add(submitButton, gbc);
 
         getContentPane().add(panel, BorderLayout.CENTER);
@@ -221,12 +240,14 @@ class SelectResponseFrame extends JFrame {
 
         JLabel msg = new JLabel(response);
         msg.setPreferredSize(new Dimension(500, 50));
-        msg.setHorizontalAlignment(SwingConstants.CENTER);    //add
+        msg.setHorizontalAlignment(SwingConstants.CENTER);
         msg.setVerticalAlignment(SwingConstants.CENTER);
+        msg.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 18)); // 調整したフォントサイズを設定
 
         JButton submitButton = new JButton("Return to Select Menu");
         submitButton.setPreferredSize(new Dimension(250, 50));
         submitButton.setFocusable(false);
+        submitButton.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 16)); // 調整したフォントサイズを設定
         submitButton.addActionListener(e -> {
             dispose();
         });
@@ -236,7 +257,6 @@ class SelectResponseFrame extends JFrame {
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
-        //gbc.insets = new Insets(10, 10, 10, 10);
         panel.add(msg, gbc);
 
         gbc.gridwidth = 1;
@@ -279,30 +299,41 @@ class LoginFrame extends JFrame {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 18);
+        Font inputFont = new Font("Arial", Font.PLAIN, 20);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 16);
+
         JLabel msg = new JLabel("Login");
         msg.setPreferredSize(new Dimension(200, 20));
-        msg.setHorizontalAlignment(SwingConstants.CENTER);    //add
+        msg.setHorizontalAlignment(SwingConstants.CENTER);
         msg.setVerticalAlignment(SwingConstants.CENTER);
+        msg.setFont(labelFont);  // Set font size for label
 
         JLabel l1 = new JLabel("Enter your username and password.", JLabel.CENTER);
         l1.setPreferredSize(new Dimension(500, 20));
-        l1.setHorizontalAlignment(SwingConstants.CENTER);    //add
+        l1.setHorizontalAlignment(SwingConstants.CENTER);
         l1.setVerticalAlignment(SwingConstants.CENTER);
+        l1.setFont(labelFont);  // Set font size for label
 
         JLabel l2 = new JLabel("Your username:", JLabel.RIGHT);
         l2.setPreferredSize(new Dimension(200, 50));
+        l2.setFont(labelFont);  // Set font size for label
 
         JLabel l3 = new JLabel("Your password:", JLabel.RIGHT);
         l3.setPreferredSize(new Dimension(200, 50));
+        l3.setFont(labelFont);  // Set font size for label
 
         JTextField id = new JTextField(10);
         id.setPreferredSize(new Dimension(200, 20));
+        id.setFont(inputFont);  // Set font size for input
 
         JPasswordField password = new JPasswordField(10);
         password.setPreferredSize(new Dimension(200, 20));
+        password.setFont(inputFont);  // Set font size for input
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(100, 50));
+        submitButton.setFont(buttonFont);  // Set font size for button
         submitButton.addActionListener(evt -> {
             String username = id.getText();
             String pwd = new String(password.getPassword());
@@ -313,6 +344,8 @@ class LoginFrame extends JFrame {
                 ex.printStackTrace();
             }
         });
+
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         gbc.gridwidth = 1;
         gbc.gridx = 0;
@@ -363,6 +396,11 @@ class CreateAccountAction implements ActionListener {
 }
 
 class CreateAccountFrame extends JFrame {
+    private JTextField id;
+    private JPasswordField password1;
+    private JPasswordField password2;
+    private JLabel passwordMatchLabel;
+    
     public CreateAccountFrame(Client client) {
         setTitle("Sign Up");
         setVisible(true);
@@ -372,42 +410,71 @@ class CreateAccountFrame extends JFrame {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 18);
+        Font inputFont = new Font("Arial", Font.PLAIN, 16);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 16);
+
         JLabel msg = new JLabel("Sign Up");
         msg.setPreferredSize(new Dimension(200, 20));
-        msg.setHorizontalAlignment(SwingConstants.CENTER);    //add
-        msg.setVerticalAlignment(SwingConstants.CENTER);  
+        msg.setHorizontalAlignment(SwingConstants.CENTER);
+        msg.setVerticalAlignment(SwingConstants.CENTER);
+        msg.setFont(labelFont);
 
         JLabel l1 = new JLabel("You can create your account.", JLabel.CENTER);
-        l1.setPreferredSize(new Dimension(250, 20));
+        l1.setPreferredSize(new Dimension(350, 20));
+        l1.setFont(labelFont);
 
         JLabel l2 = new JLabel("Your username:", JLabel.RIGHT);
         l2.setPreferredSize(new Dimension(150, 50));
+        l2.setFont(labelFont);
 
         JLabel l3 = new JLabel("Your password:", JLabel.RIGHT);
         l3.setPreferredSize(new Dimension(150, 50));
+        l3.setFont(labelFont);
 
-        JTextField id = new JTextField(10);
+        id = new JTextField(10);
         id.setPreferredSize(new Dimension(200, 20));
-        JPasswordField password = new JPasswordField(10);
-        password.setPreferredSize(new Dimension(200, 20));
+        id.setFont(inputFont);
+
+        password1 = new JPasswordField(10);
+        password1.setPreferredSize(new Dimension(200, 20));
+        password1.setFont(inputFont);
+
+        password2 = new JPasswordField(10);
+        password2.setPreferredSize(new Dimension(200, 20));
+        password2.setFont(inputFont);
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(100, 50));
+        submitButton.setFont(buttonFont);
         submitButton.addActionListener(evt -> {
             String username = id.getText();
-            String pwd = new String(password.getPassword());
-            try {
-                client.sendCredentials(username, pwd, "REGISTER");
-                dispose();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            String pwd1 = new String(password1.getPassword());
+            String pwd2 = new String(password2.getPassword());
+
+            if (pwd1.equals(pwd2)) {
+                try {
+                    client.sendCredentials(username, pwd1, "REGISTER");
+                    dispose();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                // Clear passwords and show message
+                password1.setText("");
+                password2.setText("");
+                JOptionPane.showMessageDialog(CreateAccountFrame.this,
+                        "Passwords do not match. Please try again.",
+                        "Password Mismatch",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
-        gbc.insets = new Insets(10, 10, 10, 10);
         panel.add(l1, gbc);
 
         gbc.gridwidth = 1;
@@ -425,15 +492,24 @@ class CreateAccountFrame extends JFrame {
 
         gbc.gridx = 1;
         gbc.gridy = 2;
-        panel.add(password, gbc);
+        panel.add(password1, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(new JLabel("Confirm password:", JLabel.RIGHT), gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 3;
+        panel.add(password2, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 4;
         gbc.gridwidth = 3;
         panel.add(submitButton, gbc);
 
         getContentPane().add(panel, BorderLayout.CENTER);
     }
+
 }
 
 class ENDAction implements ActionListener {
@@ -482,17 +558,24 @@ class SelectFrame extends JFrame {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 18);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 16);
+
         JLabel msg = new JLabel("Operation Selection");
         msg.setPreferredSize(new Dimension(300, 50));
+        msg.setFont(labelFont);  // Set font size for label
 
         JLabel l1 = new JLabel("Enter your choice of banking operation.", JLabel.CENTER);
         l1.setPreferredSize(new Dimension(250, 20));
+        l1.setFont(labelFont);  // Set font size for label
 
         JLabel l2 = new JLabel("Select an operation:", JLabel.CENTER);
         l2.setPreferredSize(new Dimension(350, 20));
+        l2.setFont(labelFont);  // Set font size for label
 
         JButton depositButton = new JButton("Deposit");
         depositButton.setPreferredSize(new Dimension(150, 50));
+        depositButton.setFont(buttonFont);  // Set font size for button
         depositButton.addActionListener(evt -> {
             new DepositAction(client, ui).actionPerformed(null);
             dispose();
@@ -500,6 +583,7 @@ class SelectFrame extends JFrame {
 
         JButton withdrawButton = new JButton("Withdraw");
         withdrawButton.setPreferredSize(new Dimension(150, 50));
+        withdrawButton.setFont(buttonFont);  // Set font size for button
         withdrawButton.addActionListener(evt -> {
             new WithdrawalAction(client, ui).actionPerformed(null);
             dispose();
@@ -507,6 +591,7 @@ class SelectFrame extends JFrame {
 
         JButton transferButton = new JButton("Transfer");
         transferButton.setPreferredSize(new Dimension(150, 50));
+        transferButton.setFont(buttonFont);  // Set font size for button
         transferButton.addActionListener(evt -> {
             new TransferAction(client, ui).actionPerformed(null);
             dispose();
@@ -514,15 +599,16 @@ class SelectFrame extends JFrame {
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.setPreferredSize(new Dimension(150, 50));
+        logoutButton.setFont(buttonFont);  // Set font size for button
         logoutButton.addActionListener(evt -> {
             dispose();
             new LogoutAction(client, ui).actionPerformed(null);
         });
 
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 4;
-        gbc.insets = new Insets(10, 10, 10, 10);
         panel.add(msg, gbc);
 
         gbc.gridy = 1;
@@ -578,17 +664,24 @@ class DepositFrame extends JFrame {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 18);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 16);
+
         JLabel msg = new JLabel("Deposit");
         msg.setPreferredSize(new Dimension(300, 50));
+        msg.setFont(labelFont);  // Set font size for label
 
         JLabel l1 = new JLabel("Enter deposit amount.", JLabel.CENTER);
         l1.setPreferredSize(new Dimension(300, 20));
+        l1.setFont(labelFont);  // Set font size for label
 
         JTextField amountField = new JTextField(10);
         amountField.setPreferredSize(new Dimension(300, 20));
+        amountField.setFont(labelFont);  // Set font size for text field
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(300, 50));
+        submitButton.setFont(buttonFont);  // Set font size for button
         submitButton.addActionListener(evt -> {
             String amount = amountField.getText();
             try {
@@ -608,7 +701,6 @@ class DepositFrame extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
-        //gbc.insets = new Insets(10, 10, 10, 10);
         panel.add(l1, gbc);
 
         gbc.gridwidth = 1;
@@ -622,7 +714,6 @@ class DepositFrame extends JFrame {
         panel.add(submitButton, gbc);
 
         getContentPane().add(panel, BorderLayout.CENTER);
-
     }
 }
 
@@ -650,17 +741,24 @@ class WithdrawalFrame extends JFrame {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 18);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 16);
+
         JLabel msg = new JLabel("Withdrawal");
         msg.setPreferredSize(new Dimension(300, 50));
+        msg.setFont(labelFont);  // Set font size for label
 
         JLabel l1 = new JLabel("Enter withdrawal amount.", JLabel.CENTER);
         l1.setPreferredSize(new Dimension(250, 20));
+        l1.setFont(labelFont);  // Set font size for label
 
         JTextField amountField = new JTextField(10);
         amountField.setPreferredSize(new Dimension(200, 20));
+        amountField.setFont(labelFont);  // Set font size for text field
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(100, 50));
+        submitButton.setFont(buttonFont);  // Set font size for button
         submitButton.addActionListener(evt -> {
             String amount = amountField.getText();
             try {
@@ -715,26 +813,36 @@ class TransferFrame extends JFrame {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 18);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 16);
+
         JLabel msg = new JLabel("Transfer");
         msg.setPreferredSize(new Dimension(300, 50));
+        msg.setFont(labelFont);  // Set font size for label
 
         JLabel l1 = new JLabel("Enter transfer details.", JLabel.CENTER);
         l1.setPreferredSize(new Dimension(250, 20));
+        l1.setFont(labelFont);  // Set font size for label
 
         JLabel l2 = new JLabel("Recipient username:", JLabel.RIGHT);
-        l2.setPreferredSize(new Dimension(150, 20));
+        l2.setPreferredSize(new Dimension(200, 20));
+        l2.setFont(labelFont);  // Set font size for label
 
         JLabel l3 = new JLabel("Amount:", JLabel.RIGHT);
-        l3.setPreferredSize(new Dimension(150, 20));
+        l3.setPreferredSize(new Dimension(200, 20));
+        l3.setFont(labelFont);  // Set font size for label
 
         JTextField recipientField = new JTextField(10);
         recipientField.setPreferredSize(new Dimension(200, 20));
+        recipientField.setFont(labelFont);  // Set font size for text field
 
         JTextField amountField = new JTextField(10);
         amountField.setPreferredSize(new Dimension(200, 20));
+        amountField.setFont(labelFont);  // Set font size for text field
 
         JButton submitButton = new JButton("Submit");
         submitButton.setPreferredSize(new Dimension(100, 50));
+        submitButton.setFont(buttonFont);  // Set font size for button
         submitButton.addActionListener(evt -> {
             String recipient = recipientField.getText();
             String amount = amountField.getText();
