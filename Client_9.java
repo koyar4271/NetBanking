@@ -94,7 +94,7 @@ class UI extends JFrame {
 
     UI(String title) {
         setTitle(title);
-        setBounds(100, 100, 600, 500);
+        setBounds(100, 100, 800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         client = new Client();
         client.setUI(this);
@@ -118,7 +118,7 @@ class UI extends JFrame {
         label.setVerticalAlignment(SwingConstants.CENTER);  //add
 
         JButton yesButton = new JButton("Yes");
-        yesButton.setPreferredSize(new Dimension(100, 50));
+        yesButton.setPreferredSize(new Dimension(200, 100));
         yesButton.setFocusable(false);
         yesButton.addActionListener(new LoginAction(client));
 
@@ -273,7 +273,7 @@ class LoginFrame extends JFrame {
     public LoginFrame(Client client) {
         setTitle("Login");
         setVisible(true);
-        setBounds(300, 300, 600, 500);
+        setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new GridBagLayout());
@@ -582,13 +582,13 @@ class DepositFrame extends JFrame {
         msg.setPreferredSize(new Dimension(300, 50));
 
         JLabel l1 = new JLabel("Enter deposit amount.", JLabel.CENTER);
-        l1.setPreferredSize(new Dimension(250, 20));
+        l1.setPreferredSize(new Dimension(300, 20));
 
         JTextField amountField = new JTextField(10);
-        amountField.setPreferredSize(new Dimension(200, 20));
+        amountField.setPreferredSize(new Dimension(300, 20));
 
         JButton submitButton = new JButton("Submit");
-        submitButton.setPreferredSize(new Dimension(100, 50));
+        submitButton.setPreferredSize(new Dimension(300, 50));
         submitButton.addActionListener(evt -> {
             String amount = amountField.getText();
             try {
@@ -599,13 +599,13 @@ class DepositFrame extends JFrame {
             }
         });
 
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
         gbc.insets = new Insets(10, 10, 10, 10);
         panel.add(msg, gbc);
 
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         //gbc.insets = new Insets(10, 10, 10, 10);

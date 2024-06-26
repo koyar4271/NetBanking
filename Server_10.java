@@ -28,6 +28,7 @@ class Server {
     private static ServerSocket serverSocket;
     private static int clientCount = 0;
     private static DefaultTableModel tableModel;
+    private static String dbPassword;
 
     public void start() {
         initializeGUI();
@@ -44,6 +45,11 @@ class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setDbPassword(String password) {
+        dbPassword = password;
+        UserManager.setDbPassword(password);
     }
 
     private synchronized static void incrementClientCount() {
@@ -174,10 +180,14 @@ class UserManager {
     private static final String PROPATIES = "?characterEncoding=UTF-8&serverTimezone=UTC";
     private static final String DB_URL = "jdbc:mysql://localhost/" + DATABASE_NAME + PROPATIES;
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "rootpass";
+    private static String dbPassword;
+
+    public static void setDbPassword(String password) {
+        dbPassword = password;
+    }
 
     private static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        return DriverManager.getConnection(DB_URL, DB_USER, dbPassword);
     }
 
     public static synchronized boolean usedUser(String username) {
@@ -355,10 +365,17 @@ class UserManager {
 
 }
 
-
 public class Server_10 {
     public static void main(String[] args) {
+        
         Server server = new Server();
-        server.start();
+        try (BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));){
+            System.out.println("input MySQL password : ");
+            String password = userInputReader.readLine();
+            Server.setDbPassword(password);
+            server.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
