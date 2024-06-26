@@ -26,7 +26,7 @@ import javax.swing.SwingConstants;
 
 
 public class Client_9 {
-    public static void main(String[] args) {
+    public static void main(String[] args){
         UI frame = new UI("Net Banking");
         frame.setVisible(true);
     }
@@ -83,11 +83,9 @@ class Client {
         String response = in.readLine();
         System.out.println(response);
         if (sub.equals("LOGOUT")) {
-
         } else {
             ui.showSelectResponse(response);
         }
-
         // ui.showSelectAction();
     }
 }
@@ -227,54 +225,6 @@ class ResponseFrame extends JFrame {
     }
 }
 
-
-
-
-// class ResponseFrame extends JFrame {
-//     public ResponseFrame(String response) {
-//         setTitle("Response");
-//         setVisible(true);
-//         setBounds(100, 100, 800, 600);
-//         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-//         JPanel panel = new JPanel(new GridBagLayout());
-//         GridBagConstraints gbc = new GridBagConstraints();
-
-//         Font labelFont = new Font("Arial", Font.PLAIN, 25);
-//         Font buttonFont = new Font("Arial", Font.PLAIN, 30);
-
-//         JLabel msg = new JLabel(response);
-//         msg.setPreferredSize(new Dimension(300, 100));
-//         msg.setFont(labelFont);  // Set font size for label
-
-//         JButton submitButton = new JButton("Return to Main Menu");
-//         submitButton.setPreferredSize(new Dimension(400, 100));
-//         submitButton.setFont(buttonFont);  // Set font size for button
-//         submitButton.setFocusable(false);
-//         submitButton.addActionListener(e -> dispose());
-
-//         gbc.gridx = 0;
-//         gbc.gridy = 0;
-//         gbc.gridwidth = 3;
-//         gbc.insets = new Insets(10, 10, 10, 10);
-//         gbc.anchor = GridBagConstraints.CENTER;  // Center the label
-//         panel.add(msg, gbc);
-
-//         gbc.gridwidth = 3;
-//         gbc.gridx = 0;
-//         gbc.gridy = 1;
-//         gbc.anchor = GridBagConstraints.CENTER;  // Center the button
-//         panel.add(submitButton, gbc);
-
-//         getContentPane().add(panel, BorderLayout.CENTER);
-//     }
-// }
-
-
-
-
-
-
 class SelectResponseFrame extends JFrame {
     private UI ui;
 
@@ -285,7 +235,8 @@ class SelectResponseFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("background_image.png");
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel msg = new JLabel(response);
@@ -346,7 +297,8 @@ class LoginFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("background_image.png");
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         Font labelFont = new Font("Arial", Font.PLAIN, 18);
@@ -457,7 +409,8 @@ class CreateAccountFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("background_image.png");
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         Font labelFont = new Font("Arial", Font.PLAIN, 18);
@@ -605,7 +558,8 @@ class SelectFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("backgrond_image.png");
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         Font labelFont = new Font("Arial", Font.PLAIN, 18);
@@ -711,7 +665,8 @@ class DepositFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("background_image.png");
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         Font labelFont = new Font("Arial", Font.PLAIN, 18);
@@ -788,7 +743,8 @@ class WithdrawalFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("background_image.png");
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         Font labelFont = new Font("Arial", Font.PLAIN, 18);
