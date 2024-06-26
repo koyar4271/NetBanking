@@ -130,7 +130,7 @@ class UserManager {
     private static final String PROPATIES = "?characterEncoding=UTF-8&serverTimezone=UTC";
     private static final String DB_URL = "jdbc:mysql://localhost/" + DATABASE_NAME + PROPATIES;
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "2784koya";
+    private static final String DB_PASSWORD = "rootpass";
 
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
@@ -267,39 +267,6 @@ class UserManager {
             }
         }
         return true;
-    }
-}
-
-
-class UserAccount {
-    private String username;
-    private String password;
-    private int balance;
-
-    public UserAccount(String username, String password, int balance) {
-        this.username = username;
-        this.password = password;
-        this.balance = balance;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public int getBalance() {
-        return balance;
-    }
-
-    public void depositBalance(int amount){
-        this.balance += amount;
-    }
-
-    public void withdrawalBalance(int amount){
-        this.balance -= amount;
     }
 }
 
