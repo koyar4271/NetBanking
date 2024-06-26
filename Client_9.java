@@ -19,7 +19,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -109,11 +108,10 @@ class UI extends JFrame {
     }
     
     public void initMainPanel() {
-        ImagePanel panel = new ImagePanel("background_image.png"); // 画像のパスを指定する
+        ImagePanel panel = new ImagePanel("background_image.png");
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-    
-        // フォントを設定
+
         Font labelFont = new Font("Arial", Font.PLAIN, 25);
         Font buttonFont = new Font("Arial", Font.PLAIN, 30);
     
@@ -121,24 +119,24 @@ class UI extends JFrame {
         label.setPreferredSize(new Dimension(200, 100));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setVerticalAlignment(SwingConstants.CENTER);
-        label.setFont(labelFont); // フォントを設定
+        label.setFont(labelFont);
     
         JButton yesButton = new JButton("Yes");
         yesButton.setPreferredSize(new Dimension(200, 100));
         yesButton.setFocusable(false);
-        yesButton.setFont(buttonFont); // フォントを設定
+        yesButton.setFont(buttonFont);
         yesButton.addActionListener(new LoginAction(client));
     
         JButton noButton = new JButton("No");
         noButton.setPreferredSize(new Dimension(200, 100));
         noButton.setFocusable(false);
-        noButton.setFont(buttonFont); // フォントを設定
+        noButton.setFont(buttonFont);
         noButton.addActionListener(new CreateAccountAction(client));
     
         JButton endButton = new JButton("END");
         endButton.setPreferredSize(new Dimension(200, 100));
         endButton.setFocusable(false);
-        endButton.setFont(buttonFont); // フォントを設定
+        endButton.setFont(buttonFont);
         endButton.addActionListener(new ENDAction(client, this));
     
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -243,12 +241,12 @@ class SelectResponseFrame extends JFrame {
         msg.setPreferredSize(new Dimension(500, 50));
         msg.setHorizontalAlignment(SwingConstants.CENTER);
         msg.setVerticalAlignment(SwingConstants.CENTER);
-        msg.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 18)); // 調整したフォントサイズを設定
+        msg.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 18));
 
         JButton submitButton = new JButton("Return to Select Menu");
         submitButton.setPreferredSize(new Dimension(250, 50));
         submitButton.setFocusable(false);
-        submitButton.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 16)); // 調整したフォントサイズを設定
+        submitButton.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 16));
         submitButton.addActionListener(e -> {
             dispose();
         });
@@ -558,7 +556,7 @@ class SelectFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        ImagePanel panel = new ImagePanel("backgrond_image.png");
+        ImagePanel panel = new ImagePanel("background_image.png");
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -816,7 +814,8 @@ class TransferFrame extends JFrame {
         setBounds(100, 100, 600, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        ImagePanel panel = new ImagePanel("background_image.png");
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         Font labelFont = new Font("Arial", Font.PLAIN, 18);
