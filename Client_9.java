@@ -107,11 +107,9 @@ class UI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         initMainPanel();
     }
     
-
     public void initMainPanel() {
         ImagePanel panel = new ImagePanel("background_image.png"); // 画像のパスを指定する
         panel.setLayout(new GridBagLayout());
@@ -192,7 +190,10 @@ class ResponseFrame extends JFrame {
         setBounds(100, 100, 800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel panel = new JPanel(new GridBagLayout());
+        // Create an ImagePanel with the background image
+        ImagePanel panel = new ImagePanel("background_image.png"); // Replace with your image path
+
+        panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         Font labelFont = new Font("Arial", Font.PLAIN, 25);
@@ -221,9 +222,58 @@ class ResponseFrame extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;  // Center the button
         panel.add(submitButton, gbc);
 
-        getContentPane().add(panel, BorderLayout.CENTER);
+        // Set the ImagePanel as the content pane
+        setContentPane(panel);
     }
 }
+
+
+
+
+// class ResponseFrame extends JFrame {
+//     public ResponseFrame(String response) {
+//         setTitle("Response");
+//         setVisible(true);
+//         setBounds(100, 100, 800, 600);
+//         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+//         JPanel panel = new JPanel(new GridBagLayout());
+//         GridBagConstraints gbc = new GridBagConstraints();
+
+//         Font labelFont = new Font("Arial", Font.PLAIN, 25);
+//         Font buttonFont = new Font("Arial", Font.PLAIN, 30);
+
+//         JLabel msg = new JLabel(response);
+//         msg.setPreferredSize(new Dimension(300, 100));
+//         msg.setFont(labelFont);  // Set font size for label
+
+//         JButton submitButton = new JButton("Return to Main Menu");
+//         submitButton.setPreferredSize(new Dimension(400, 100));
+//         submitButton.setFont(buttonFont);  // Set font size for button
+//         submitButton.setFocusable(false);
+//         submitButton.addActionListener(e -> dispose());
+
+//         gbc.gridx = 0;
+//         gbc.gridy = 0;
+//         gbc.gridwidth = 3;
+//         gbc.insets = new Insets(10, 10, 10, 10);
+//         gbc.anchor = GridBagConstraints.CENTER;  // Center the label
+//         panel.add(msg, gbc);
+
+//         gbc.gridwidth = 3;
+//         gbc.gridx = 0;
+//         gbc.gridy = 1;
+//         gbc.anchor = GridBagConstraints.CENTER;  // Center the button
+//         panel.add(submitButton, gbc);
+
+//         getContentPane().add(panel, BorderLayout.CENTER);
+//     }
+// }
+
+
+
+
+
 
 class SelectResponseFrame extends JFrame {
     private UI ui;
